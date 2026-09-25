@@ -1,0 +1,41 @@
+{
+  "name": "agent-stock-basket-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "check": "tsc --noEmit --project tsconfig.json",
+    "integration-test": "tsc --project tsconfig.integration.json && node --test dist-integration/tests/*.js",
+    "fetch-pyth-fixture": "node --loader ts-node/esm scripts/fetch-pyth-fixture.ts",
+    "start": "next start",
+    "orchestrator": "node --loader ts-node/esm src/utils/agent-orchestrator.ts"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.31.1",
+    "@meteora-ag/dynamic-bonding-curve-sdk": "^1.5.12",
+    "@pythnetwork/price-service-client": "^1.10.0",
+    "@solana/spl-token": "^0.4.15",
+    "@solana/wallet-adapter-base": "^0.9.28",
+    "@solana/wallet-adapter-react": "^0.15.40",
+    "@solana/wallet-adapter-react-ui": "^0.9.40",
+    "@solana/wallet-adapter-wallets": "^0.19.39",
+    "@solana/web3.js": "^1.47.3",
+    "axios": "^1.7.9",
+    "next": "^16.3.5",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/bn.js": "^5.2.0",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}

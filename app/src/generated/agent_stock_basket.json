@@ -1,0 +1,1749 @@
+{
+  "address": "EeVNS2rn7K7Pq2GvDHzfmPd1GtD9n9S6AtReLqETSR3R",
+  "metadata": {
+    "name": "agent_stock_basket",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Auto-Rebalancing Vault RWA Stock Basket"
+  },
+  "instructions": [
+    {
+      "name": "borrow_against_collateral",
+      "discriminator": [
+        179,
+        224,
+        236,
+        136,
+        165,
+        149,
+        88,
+        99
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true,
+          "relations": [
+            "borrow_position"
+          ]
+        },
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "borrow_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  114,
+                  114,
+                  111,
+                  119,
+                  95,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "borrower"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrower",
+          "relations": [
+            "borrow_position"
+          ]
+        },
+        {
+          "name": "vault_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_token_account",
+          "writable": true
+        },
+        {
+          "name": "vault_mint"
+        },
+        {
+          "name": "loan_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  111,
+                  97,
+                  110,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "loan_mint"
+        },
+        {
+          "name": "borrower_loan_account",
+          "writable": true
+        },
+        {
+          "name": "oracle_price_feed"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        }
+      ],
+      "args": [
+        {
+          "name": "collateral_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "claim_yield",
+      "discriminator": [
+        49,
+        74,
+        111,
+        7,
+        186,
+        22,
+        61,
+        165
+      ],
+      "accounts": [
+        {
+          "name": "beneficiary",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "yield_position"
+          ]
+        },
+        {
+          "name": "yield_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  121,
+                  105,
+                  101,
+                  108,
+                  100,
+                  95,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "beneficiary"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "relations": [
+            "yield_position"
+          ]
+        },
+        {
+          "name": "vault_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_token_account",
+          "writable": true
+        },
+        {
+          "name": "vault_mint"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "destination_token_account",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "configure_borrowing",
+      "discriminator": [
+        126,
+        178,
+        128,
+        120,
+        39,
+        204,
+        101,
+        230
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "max_ltv_bps",
+          "type": "u16"
+        },
+        {
+          "name": "liquidation_ltv_bps",
+          "type": "u16"
+        },
+        {
+          "name": "max_price_age_seconds",
+          "type": "u64"
+        },
+        {
+          "name": "max_confidence_bps",
+          "type": "u16"
+        },
+        {
+          "name": "liquidation_bonus_bps",
+          "type": "u16"
+        },
+        {
+          "name": "oracle_price_feed",
+          "type": "pubkey"
+        },
+        {
+          "name": "oracle_program",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "deposit_usdc",
+      "discriminator": [
+        184,
+        148,
+        250,
+        169,
+        224,
+        213,
+        34,
+        126
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "signer": true
+        },
+        {
+          "name": "user_token_account",
+          "writable": true
+        },
+        {
+          "name": "vault_pda",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_token_account",
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "vault_mint"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "execute_rebalance",
+      "discriminator": [
+        36,
+        232,
+        110,
+        192,
+        96,
+        226,
+        100,
+        120
+      ],
+      "accounts": [
+        {
+          "name": "signer_agent",
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "vault_authority",
+          "docs": [
+            "Token-2022 transfers through the stored authority bump."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_token_account",
+          "writable": true
+        },
+        {
+          "name": "destination_token_account",
+          "writable": true
+        },
+        {
+          "name": "vault_mint"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "expected_basket_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize_borrow_pool",
+      "discriminator": [
+        228,
+        184,
+        164,
+        21,
+        167,
+        244,
+        153,
+        179
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "loan_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  111,
+                  97,
+                  110,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "loan_mint"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_borrow_position",
+      "discriminator": [
+        101,
+        93,
+        229,
+        188,
+        115,
+        151,
+        231,
+        124
+      ],
+      "accounts": [
+        {
+          "name": "vault"
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "borrower"
+        },
+        {
+          "name": "borrow_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  114,
+                  114,
+                  111,
+                  119,
+                  95,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "borrower"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_vault",
+      "discriminator": [
+        48,
+        191,
+        163,
+        44,
+        71,
+        129,
+        63,
+        164
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "arg",
+                "path": "basket_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_authority",
+          "docs": [
+            "Token-2022 transfers through the stored authority bump."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_mint"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "basket_id",
+          "type": "u64"
+        },
+        {
+          "name": "ai_agent",
+          "type": "pubkey"
+        },
+        {
+          "name": "max_rebalance_amount",
+          "type": "u64"
+        },
+        {
+          "name": "min_reserve_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize_yield_position",
+      "discriminator": [
+        16,
+        157,
+        39,
+        50,
+        9,
+        62,
+        3,
+        16
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "beneficiary"
+        },
+        {
+          "name": "yield_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  121,
+                  105,
+                  101,
+                  108,
+                  100,
+                  95,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "beneficiary"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "shares",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "liquidate_position",
+      "discriminator": [
+        187,
+        74,
+        229,
+        149,
+        102,
+        81,
+        221,
+        68
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true,
+          "relations": [
+            "borrow_position"
+          ]
+        },
+        {
+          "name": "borrow_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  114,
+                  114,
+                  111,
+                  119,
+                  95,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "borrower"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrower",
+          "relations": [
+            "borrow_position"
+          ]
+        },
+        {
+          "name": "liquidator",
+          "signer": true
+        },
+        {
+          "name": "vault_authority",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_token_account",
+          "writable": true
+        },
+        {
+          "name": "vault_mint"
+        },
+        {
+          "name": "loan_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  111,
+                  97,
+                  110,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "loan_mint"
+        },
+        {
+          "name": "liquidator_loan_account",
+          "writable": true
+        },
+        {
+          "name": "liquidator_collateral_account",
+          "writable": true
+        },
+        {
+          "name": "oracle_price_feed"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        }
+      ],
+      "args": [
+        {
+          "name": "repay_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "record_yield",
+      "discriminator": [
+        80,
+        136,
+        238,
+        204,
+        216,
+        161,
+        41,
+        88
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "signer_agent",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "repay_borrow",
+      "discriminator": [
+        35,
+        69,
+        75,
+        58,
+        112,
+        201,
+        126,
+        14
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true,
+          "relations": [
+            "borrow_position"
+          ]
+        },
+        {
+          "name": "borrow_position",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  114,
+                  114,
+                  111,
+                  119,
+                  95,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "borrower"
+              }
+            ]
+          }
+        },
+        {
+          "name": "borrower",
+          "signer": true,
+          "relations": [
+            "borrow_position"
+          ]
+        },
+        {
+          "name": "vault_authority",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "loan_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  111,
+                  97,
+                  110,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "loan_mint"
+        },
+        {
+          "name": "borrower_loan_account",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "BorrowPosition",
+      "discriminator": [
+        243,
+        140,
+        20,
+        139,
+        32,
+        243,
+        114,
+        55
+      ]
+    },
+    {
+      "name": "Vault",
+      "discriminator": [
+        211,
+        8,
+        232,
+        43,
+        2,
+        152,
+        117,
+        119
+      ]
+    },
+    {
+      "name": "YieldPosition",
+      "discriminator": [
+        77,
+        217,
+        160,
+        86,
+        158,
+        186,
+        248,
+        193
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "BorrowCreated",
+      "discriminator": [
+        112,
+        251,
+        70,
+        80,
+        99,
+        207,
+        68,
+        218
+      ]
+    },
+    {
+      "name": "BorrowRepaid",
+      "discriminator": [
+        204,
+        142,
+        178,
+        250,
+        35,
+        150,
+        83,
+        31
+      ]
+    },
+    {
+      "name": "LiquidationExecuted",
+      "discriminator": [
+        231,
+        78,
+        79,
+        211,
+        167,
+        46,
+        83,
+        205
+      ]
+    },
+    {
+      "name": "RebalanceExecuted",
+      "discriminator": [
+        194,
+        41,
+        129,
+        249,
+        215,
+        226,
+        122,
+        248
+      ]
+    },
+    {
+      "name": "VaultInitialized",
+      "discriminator": [
+        180,
+        43,
+        207,
+        2,
+        18,
+        71,
+        3,
+        75
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidAgent",
+      "msg": "The configured AI agent must be a non-default public key."
+    },
+    {
+      "code": 6001,
+      "name": "InvalidRebalanceLimit",
+      "msg": "The maximum rebalance amount must be greater than zero."
+    },
+    {
+      "code": 6002,
+      "name": "InvalidReserve",
+      "msg": "The minimum reserve cannot exceed the maximum rebalance amount."
+    },
+    {
+      "code": 6003,
+      "name": "UnauthorizedAgent",
+      "msg": "The transaction signer is not the AI agent registered for this vault."
+    },
+    {
+      "code": 6004,
+      "name": "BasketMismatch",
+      "msg": "The basket identifier does not match the vault."
+    },
+    {
+      "code": 6005,
+      "name": "InvalidAmount",
+      "msg": "The rebalance amount must be greater than zero."
+    },
+    {
+      "code": 6006,
+      "name": "RebalanceLimitExceeded",
+      "msg": "The rebalance amount exceeds the configured per-transaction limit."
+    },
+    {
+      "code": 6007,
+      "name": "InvalidDestinationOwner",
+      "msg": "The destination token account is not owned by the vault owner."
+    },
+    {
+      "code": 6008,
+      "name": "InsufficientVaultBalance",
+      "msg": "The vault token account does not contain enough tokens."
+    },
+    {
+      "code": 6009,
+      "name": "ReserveViolation",
+      "msg": "The rebalance would violate the configured reserve."
+    },
+    {
+      "code": 6010,
+      "name": "InvalidVaultAuthority",
+      "msg": "The vault token account is not controlled by the vault authority."
+    },
+    {
+      "code": 6011,
+      "name": "InvalidUserTokenOwner",
+      "msg": "The user token account is not controlled by the depositing user."
+    },
+    {
+      "code": 6012,
+      "name": "MintMismatch",
+      "msg": "The token mint does not match the vault mint."
+    },
+    {
+      "code": 6013,
+      "name": "Token2022Required",
+      "msg": "This vault only accepts the Solana Token-2022 program."
+    },
+    {
+      "code": 6014,
+      "name": "ArithmeticOverflow",
+      "msg": "An arithmetic operation overflowed."
+    },
+    {
+      "code": 6015,
+      "name": "InvalidShares",
+      "msg": "The number of shares must be greater than zero."
+    },
+    {
+      "code": 6016,
+      "name": "NoShares",
+      "msg": "The vault has no shares."
+    },
+    {
+      "code": 6017,
+      "name": "NothingToClaim",
+      "msg": "There is no yield available to claim."
+    },
+    {
+      "code": 6018,
+      "name": "InvalidLtv",
+      "msg": "The loan-to-value ratio must be between 0 and 10000 basis points."
+    },
+    {
+      "code": 6019,
+      "name": "BorrowingDisabled",
+      "msg": "Borrowing is disabled until the vault owner configures an LTV."
+    },
+    {
+      "code": 6020,
+      "name": "OutstandingDebt",
+      "msg": "The borrowing position already has outstanding debt."
+    },
+    {
+      "code": 6021,
+      "name": "InvalidDebt",
+      "msg": "The calculated debt is too small or invalid."
+    },
+    {
+      "code": 6022,
+      "name": "RepaymentExceedsDebt",
+      "msg": "The repayment exceeds the outstanding debt."
+    },
+    {
+      "code": 6023,
+      "name": "InvalidOracleConfig",
+      "msg": "The oracle configuration is invalid."
+    },
+    {
+      "code": 6024,
+      "name": "InvalidOracleAccount",
+      "msg": "The configured oracle account is invalid."
+    },
+    {
+      "code": 6025,
+      "name": "StaleOraclePrice",
+      "msg": "The oracle price is stale."
+    },
+    {
+      "code": 6026,
+      "name": "InvalidOraclePrice",
+      "msg": "The oracle price is invalid."
+    },
+    {
+      "code": 6027,
+      "name": "OracleConfidenceTooWide",
+      "msg": "The oracle confidence interval is too wide."
+    },
+    {
+      "code": 6028,
+      "name": "InvalidLiquidationBonus",
+      "msg": "The liquidation bonus must be between 0 and 10000 basis points."
+    },
+    {
+      "code": 6029,
+      "name": "PositionHealthy",
+      "msg": "The borrowing position is still healthy."
+    }
+  ],
+  "types": [
+    {
+      "name": "BorrowCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "borrower",
+            "type": "pubkey"
+          },
+          {
+            "name": "collateral_amount",
+            "type": "u64"
+          },
+          {
+            "name": "debt_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BorrowPosition",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "borrower",
+            "type": "pubkey"
+          },
+          {
+            "name": "collateral_amount",
+            "type": "u64"
+          },
+          {
+            "name": "debt_amount",
+            "type": "u64"
+          },
+          {
+            "name": "repaid_amount",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BorrowRepaid",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "borrower",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "collateral_released",
+            "type": "u64"
+          },
+          {
+            "name": "remaining_debt",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiquidationExecuted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "borrower",
+            "type": "pubkey"
+          },
+          {
+            "name": "liquidator",
+            "type": "pubkey"
+          },
+          {
+            "name": "repaid_amount",
+            "type": "u64"
+          },
+          {
+            "name": "collateral_released",
+            "type": "u64"
+          },
+          {
+            "name": "remaining_debt",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RebalanceExecuted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "destination",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "remaining_balance",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "ai_agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "id_basket",
+            "type": "u64"
+          },
+          {
+            "name": "max_rebalance_amount",
+            "type": "u64"
+          },
+          {
+            "name": "min_reserve_amount",
+            "type": "u64"
+          },
+          {
+            "name": "total_rebalanced",
+            "type": "u64"
+          },
+          {
+            "name": "total_shares",
+            "type": "u64"
+          },
+          {
+            "name": "accumulated_yield",
+            "type": "u64"
+          },
+          {
+            "name": "total_yield_claimed",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "authority_bump",
+            "type": "u8"
+          },
+          {
+            "name": "max_ltv_bps",
+            "type": "u16"
+          },
+          {
+            "name": "total_collateral_locked",
+            "type": "u64"
+          },
+          {
+            "name": "liquidation_ltv_bps",
+            "type": "u16"
+          },
+          {
+            "name": "max_price_age_seconds",
+            "type": "u64"
+          },
+          {
+            "name": "max_confidence_bps",
+            "type": "u16"
+          },
+          {
+            "name": "liquidation_bonus_bps",
+            "type": "u16"
+          },
+          {
+            "name": "oracle_price_feed",
+            "type": "pubkey"
+          },
+          {
+            "name": "oracle_program",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "ai_agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "basket_id",
+            "type": "u64"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "YieldPosition",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "beneficiary",
+            "type": "pubkey"
+          },
+          {
+            "name": "shares",
+            "type": "u64"
+          },
+          {
+            "name": "claimed_yield",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

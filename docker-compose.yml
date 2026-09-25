@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  hermes-agent:
+    image: 'harness/agent:latest' # Ganti dengan nama image resmi hermes/hernes agent yang Anda gunakan jika berbeda
+    container_name: hermes-agent
+    restart: unless-stopped
+    environment:
+      - AGENT_NAME=Hermes-Dev-Agent
+      - AGENT_SECRET=MASUKKAN_TOKEN_SECRET_RAHASIA_ANDA # Ganti dengan token autentikasi dari dasbor utama Anda
+      - BASE_URL=http://nginx-proxy-manager:80 # Menghubungkan ke Proxy jika dasbor di-deploy lokal
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Mengizinkan agen mengelola container (sangat berguna untuk CI/CD build)
+      - ./data:/data
+    networks:
+      - ai-network
+
+networks:
+  ai-network:
+    external: true # Memaksa agen masuk ke jaringan terisolasi yang sudah Anda buat sebelumnya

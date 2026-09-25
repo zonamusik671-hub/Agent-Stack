@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "dist-integration",
+    "noEmit": false
+  },
+  "include": [
+    "src/utils/anchorClient.ts",
+    "src/utils/meteoraDbc.ts",
+    "src/utils/prestocksApi.ts",
+    "src/utils/pythConnection.ts",
+    "src/utils/pythFixtureHelper.ts",
+    "src/utils/clawpump.ts",
+    "tests/anchor-client.integration.ts",
+    "tests/data-regression.test.ts",
+    "tests/meteora-simulation.integration.ts",
+    "tests/clawpump.integration.ts",
+    "tests/borrowing.integration.ts",
+    "tests/mock-sponsor-server.ts"
+  ]
+}

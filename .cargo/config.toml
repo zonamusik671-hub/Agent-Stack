@@ -1,0 +1,5 @@
+[target.sbf-solana-solana]
+rustflags = ["-C", "target-cpu=sbfv3"]
+
+[target.bpfel-unknown-unknown]
+rustflags = ["-C", "target-cpu=sbfv3"]

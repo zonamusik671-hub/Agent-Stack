@@ -1,0 +1,400 @@
+Coding Agent Feedback Loop — Status ASB
+PROJECT:
+  name: Agent Stock Basket
+  path: /Lab/Agent-Stack
+  target_cluster: Solana Devnet
+  current_state: UI_READY_LOCALNET_VALIDATED_DEVNET_NOT_PROVEN
+  e2e_user_ready: PARTIAL
+  submission_ready: NO
+
+1. Status seluruh sistem
+Sistem	Status saat ini	Yang sudah berfungsi	Yang masih diperlukan
+Anchor Vault	LOCALNET_VALIDATED	Initialize vault, deposit, PDA vault token, agent authorization	Deployment Devnet dan signature nyata
+Token-2022	IMPLEMENTED	PDA token account, owner/mint validation	Mint Token-2022 Devnet yang valid
+Pyth	FAIL_CLOSED	Proxy server-side, multi-fallback, Unavailable state	Feed/account Devnet valid dan optional PYTH_PRO_TOKEN
+PreStocks	PROXY_CONNECTED	/api/prestocks, validasi status LIVE, validasi mint	Verifikasi setiap mint di cluster target
+Meteora DBC	CODE_READY_NOT_PROVEN	SDK builder, quote, simulation, minimumAmountOut	Pool DBC Devnet nyata dan valid
+Borrowing	OFFLINE_TESTED	Program logic dan test fixture	Oracle Pyth Devnet, loan mint, vault setup
+Liquidation	OFFLINE_TESTED	Liquidation math dan constraints	Borrow position Devnet + price condition nyata
+Yield	PROGRAM_PARTIAL	Struktur position/claim di program	Client/UI flow dan bukti transaksi
+Clawpump	BLOCKED_SAFE	Placeholder instruction sudah dihapus	SDK/CLI resmi dan transaction builder valid
+UI	PRODUCTION_BUILD_READY	Dashboard, wallet, status systems, loading state	Wallet funded dan real Devnet transactions
+Evidence	PENDING	Format ledger tersedia	Signature confirmed via getTransaction
+Submission	INCOMPLETE	README dan checklist tersedia	Public repo, video, teammate invitation
+Referensi utama: ASB_BLUEPRINT.md, METEORA_DBC_CONFIG.md, PRESTOCKS_SCHEMA.md, PROOF.md.
+
+2. Target akhir yang harus dicapai
+
+DEFINITION_OF_DONE:
+  server:
+    - Next.js production build succeeds
+    - Pyth proxy returns safe JSON on upstream failure
+    - PreStocks proxy returns validated array
+    - no browser CORS errors
+    - no hydration mismatch
+    - RPC health check works
+
+  blockchain:
+    - program deployed to Devnet
+    - program account verified
+    - vault initialized
+    - Token-2022 deposit confirmed
+    - Pyth account verified
+    - PreStocks LIVE mint verified
+    - Meteora pool verified
+    - quote simulated
+    - swap confirmed
+    - borrow/liquidation confirmed or explicitly marked blocked
+
+  evidence:
+    - every completed transaction has confirmed Devnet signature
+    - PROOF.md contains no localnet or sandbox signature
+    - video demonstrates real flow
+    - submission checklist completed
+
+3. Instalasi yang diperlukan
+Sudah tersedia
+
+frontend:
+  - next
+  - react
+  - react-dom
+  - tailwindcss
+  - "@tailwindcss/postcss"
+  - postcss
+
+solana:
+  - "@solana/web3.js"
+  - "@solana/spl-token"
+  - "@solana/wallet-adapter-react"
+  - "@coral-xyz/anchor"
+  - "@pythnetwork/price-service-client"
+  - "@meteora-ag/dynamic-bonding-curve-sdk"
+
+tooling:
+  - TypeScript
+  - Anchor
+  - cargo-build-sbf
+  - Solana CLI
+
+Verifikasi instalasi
+
+solana --version
+anchor --version
+cargo-build-sbf --version
+node --version
+npm --version
+
+Install dependency frontend
+npm --prefix app install
+
+Validasi frontend
+npm --prefix app run typecheck
+npm --prefix app run build
+npm --prefix app run integration-test
+
+Target minimum:
+typecheck: PASS
+build: PASS
+tests: 0 failed
+
+Warning bigint-buffer dapat tetap muncul sebagai fallback JavaScript dan bukan blocker selama build/runtime berhasil.
+
+4. Environment yang harus disiapkan
+Server-only environment
+Jangan masukkan keypair atau token ke NEXT_PUBLIC_*.
+# Deployment
+ASB_PROGRAM_ID=...
+PROGRAM_KEYPAIR=/absolute/path/program-keypair.json
+DEPLOY_WALLET=/absolute/path/deploy-wallet.json
+
+# Pyth Devnet
+PYTH_DEVNET_PROGRAM_ID=...
+PYTH_DEVNET_FEED_ID=...
+PYTH_DEVNET_PRICE_ACCOUNT=...
+PYTH_PRO_TOKEN=...
+
+# On-chain assets
+TOKEN_2022_MINT=...
+USDC_DEVNET_MINT=...
+METEORA_DBC_POOL=...
+
+Browser-safe environment
+NEXT_PUBLIC_RPC_URL=https://api.devnet.solana.com
+NEXT_PUBLIC_PRESTOCKS_API=https://prestocks.com
+NEXT_PUBLIC_USDC_MINT=...
+NEXT_PUBLIC_METEORA_DBC_POOL=...
+
+Aturan:
+private:
+  - PROGRAM_KEYPAIR
+  - DEPLOY_WALLET
+  - PYTH_PRO_TOKEN
+  - seed_phrase
+
+allowed_public:
+  - ASB_PROGRAM_ID
+  - PYTH_DEVNET_PROGRAM_ID
+  - PYTH_DEVNET_FEED_ID
+  - PYTH_DEVNET_PRICE_ACCOUNT
+  - TOKEN_2022_MINT
+  - METEORA_DBC_POOL
+
+Jangan mengisi dengan:
+11111111111111111111111111111111
+placeholder
+mock
+localnet address
+sandbox signature
+
+5. Urutan E2E yang benar
+Phase A — Program deployment
+solana config set --url devnet
+
+solana address -k "$PROGRAM_KEYPAIR"
+solana address -k "$DEPLOY_WALLET"
+solana balance -k "$DEPLOY_WALLET" --url devnet
+
+Pastikan:
+public key PROGRAM_KEYPAIR == ASB_PROGRAM_ID
+DEPLOY_WALLET memiliki SOL Devnet
+
+Lalu:
+DRY_RUN=1 ./scripts/deploy-devnet.sh
+
+Hanya jika lulus:
+DEPLOY_DEVNET_CONFIRM=1 ./scripts/deploy-devnet.sh
+
+Setelah broadcast:
+solana program show "$ASB_PROGRAM_ID" --url devnet
+
+Signature harus diverifikasi menggunakan RPC getTransaction.
+
+Phase B — UI Vault
+Connect Wallet
+→ pilih Devnet
+→ cek RPC Connected
+→ Initialize Vault
+→ konfirmasi wallet
+→ confirmTransaction
+→ tampilkan Explorer link
+
+Validasi yang wajib dilakukan UI:
+vault:
+  - PDA exists
+  - vault authority exists
+  - vault token PDA exists
+  - token owner == Token-2022 program
+  - configured mint matches vault mint
+
+Phase C — Token-2022 deposit
+Validate user Token-2022 ATA
+→ validate user balance
+→ validate vault PDA
+→ simulate transaction
+→ request wallet approval
+→ send transaction
+→ confirm transaction
+→ refresh vault balance
+→ record signature
+
+Jangan mengaktifkan deposit jika:
+wallet disconnected
+vault uninitialized
+mint unavailable
+user token account missing
+balance insufficient
+RPC unavailable
+
+Phase D — Pyth dan PreStocks
+Pyth proxy
+→ validate feed ID
+→ validate price > 0
+→ validate exponent
+→ validate freshness
+→ fetch PreStocks
+→ accept only status == LIVE
+→ validate mint PublicKey
+
+Jika Pyth gagal:
+price: null
+rebalance: disabled
+ui_status: Offline / Retrying
+
+Tidak boleh menggunakan harga statis.
+
+Phase E — Meteora
+Mengacu METEORA_DBC_CONFIG.md:
+Validate pool account
+→ validate pool owner/program
+→ validate base mint
+→ validate quote mint
+→ validate Token-2022 program
+→ fetch quote
+→ calculate minimumAmountOut
+→ simulate transaction
+→ request explicit wallet approval
+→ broadcast
+→ getTransaction
+
+Pool hanya boleh dianggap valid jika:
+pool:
+  exists: true
+  owner_matches_meteora_program: true
+  base_mint_matches_prestocks_asset: true
+  quote_mint_matches_config: true
+  token_program_matches: true
+  minimum_amount_out: greater_than_zero
+
+Phase F — Borrowing dan liquidation
+Harness dua fase:
+BORROWING_PHASE=borrow ./scripts/borrowing-e2e.sh
+BORROWING_PHASE=liquidate ./scripts/borrowing-e2e.sh
+
+Sebelum menjalankan, validasi:
+oracle:
+  - Pyth price account exists
+  - owner matches Pyth program
+  - feed ID matches configured feed
+  - price is fresh
+  - confidence is within limit
+
+borrow:
+  - vault initialized
+  - borrow pool initialized
+  - loan mint exists
+  - collateral exists
+  - borrower position exists
+
+liquidation:
+  - borrower is actually liquidatable
+  - liquidation signer authorized
+  - bonus bounded
+  - transaction confirmed
+
+Jika price drop tidak dapat dibuat secara sah di Devnet, tandai:
+BORROW_LIQUIDATION_DEVNET=NOT_PROVEN
+
+Jangan menggunakan fixture lokal sebagai proof Devnet.
+
+Phase G — Clawpump
+Mengacu OFFICIAL_REPOS.md:
+required:
+  - official SDK or CLI identified
+  - version pinned
+  - official program ID known
+  - account list documented
+  - transaction builder available
+  - simulation successful
+  - user approval received
+  - Devnet signature confirmed
+
+Jika belum ada SDK/CLI resmi yang dapat diverifikasi:
+CLAWPUMP_LIVE=BLOCKED
+
+Jangan mengaktifkan placeholder instruction.
+
+6. Format feedback loop yang saya sarankan
+Gunakan variabel status berikut di setiap iterasi coding agent:
+ITERATION:
+  id: 01
+  date: 2026-09-26
+  scope: "Devnet E2E preparation"
+
+INPUTS:
+  blueprint: ASB_BLUEPRINT.md
+  meteora_spec: METEORA_DBC_CONFIG.md
+  sponsor_refs: OFFICIAL_REPOS.md
+  prestocks_schema: PRESTOCKS_SCHEMA.md
+  evidence: PROOF.md
+  submission: SUBMISSION_CHECKLIST.md
+
+CHANGES:
+  files:
+    - app/page.tsx
+    - app/app/layout.tsx
+    - app/app/api/pyth/route.ts
+    - app/app/api/prestocks/route.ts
+    - app/src/components/VaultDashboard.tsx
+  behavior:
+    - "wallet loads client-only"
+    - "Pyth fails closed"
+    - "PreStocks uses same-origin proxy"
+    - "vault deposit uses Token-2022 PDA"
+
+VALIDATION:
+  typecheck: PASS
+  build: PASS
+  integration_tests:
+    passed: 20
+    failed: 0
+    skipped: 5
+  devnet_preflight: BLOCKED
+  browser_smoke_test: PASS
+
+BLOCKERS:
+  - "missing verified Devnet Pyth configuration"
+  - "deploy wallet balance/configuration"
+  - "Meteora pool not verified"
+  - "official Clawpump transaction builder unavailable"
+
+NEXT_ACTION:
+  owner_action:
+    - "provide verified public Devnet accounts"
+    - "fund deploy wallet with Devnet SOL"
+  agent_action:
+    - "run deploy dry-run"
+    - "validate on-chain accounts"
+    - "execute only after explicit approval"
+
+EVIDENCE_POLICY:
+  proof_md_update: NO
+  reason: "No confirmed Devnet signature available"
+
+7. Prioritas pekerjaan berikutnya
+P0_BLOCKING:
+  - obtain verified Devnet public accounts
+  - fund deploy wallet
+  - complete deploy dry-run
+  - deploy program
+  - verify program account
+
+P1_CORE_E2E:
+  - initialize vault
+  - Token-2022 deposit
+  - verify getTransaction
+  - update PROOF.md
+
+P2_INTEGRATIONS:
+  - validate PreStocks mint on Devnet
+  - validate Meteora pool on-chain
+  - simulate and execute swap
+  - verify signature
+
+P3_CREDIT:
+  - configure borrowing
+  - initialize borrow pool
+  - borrow against collateral
+  - verify liquidation condition
+  - execute liquidation
+
+P4_SPONSOR:
+  - identify official Clawpump SDK/CLI
+  - build official transaction
+  - simulate
+  - execute only after approval
+
+P5_SUBMISSION:
+  - update PROOF.md
+  - update SUBMISSION_CHECKLIST.md
+  - publish public repository
+  - invite teammates
+  - record 2–3 minute demo
+Kesimpulan
+Aplikasi saat ini sudah cukup siap untuk localnet E2E dan UI demonstration, tetapi belum dapat disebut Devnet Live E2E sebelum tiga hal tersedia:
+1. Deploy wallet Devnet yang funded.
+2. Public account Devnet yang benar untuk Pyth, Token-2022, dan Meteora.
+3. Signature transaksi yang dikonfirmasi melalui getTransaction.
+
+Instalasi utama sudah tersedia. Tahap berikutnya bukan menambah dependency, melainkan menyediakan account Devnet yang valid, menjalankan deployment fail-closed, dan mengisi PROOF.md hanya berdasarkan transaksi nyata.
+
