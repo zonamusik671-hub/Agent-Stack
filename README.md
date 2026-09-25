@@ -335,3 +335,4 @@ hardcoded production pool secrets.
 - The native `bigint-buffer` binding may log a pure-JavaScript fallback in
   some environments. This is non-blocking when typecheck, build, and tests
   pass.
+# Agent-Stack
