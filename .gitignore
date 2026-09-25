@@ -6,3 +6,5 @@ dist/
 test-ledger/
 .validator.log
 target/
+deploy-wallet.json
+deploy-wallet.json
